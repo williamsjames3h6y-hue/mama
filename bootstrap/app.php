@@ -25,11 +25,31 @@ require_once __DIR__ . '/../config/container.php';
 
 $container = new Container();
 
-$container->singleton(\App\Services\SupabaseService::class, function($c) {
-    return new \App\Services\SupabaseService();
-});
+$config = require __DIR__ . '/../config/database.php';
+$dbDriver = $config['driver'];
 
-$container->singleton(\App\Services\AuthService::class, function($c) {
+if ($dbDriver === 'mysql') {
+    $container->singleton(\App\Services\MySQLService::class, function($c) {
+        return new \App\Services\MySQLService();
+    });
+
+    $container->singleton(\App\Services\DatabaseService::class, function($c) {
+        return new \App\Services\DatabaseService();
+    });
+} else {
+    $container->singleton(\App\Services\SupabaseService::class, function($c) {
+        return new \App\Services\SupabaseService();
+    });
+
+    $container->singleton(\App\Services\DatabaseService::class, function($c) {
+        return new \App\Services\DatabaseService();
+    });
+}
+
+$container->singleton(\App\Services\AuthService::class, function($c) use ($dbDriver) {
+    if ($dbDriver === 'mysql') {
+        return new \App\Services\AuthService($c->make(\App\Services\MySQLService::class));
+    }
     return new \App\Services\AuthService($c->make(\App\Services\SupabaseService::class));
 });
 
