@@ -1,4 +1,4 @@
-<?php $pageTitle = 'Profile - DataOptimize Pro'; ?>
+<?php $pageTitle = 'Profile - EarningsLLC'; ?>
 <?php include 'header.php'; ?>
 
 <div class="profile-container">

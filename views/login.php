@@ -1,4 +1,4 @@
-<?php $pageTitle = 'Login - DataOptimize Pro'; ?>
+<?php $pageTitle = 'Login - EarningsLLC'; ?>
 <?php include 'header.php'; ?>
 
 <div class="auth-container">

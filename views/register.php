@@ -1,10 +1,10 @@
-<?php $pageTitle = 'Register - DataOptimize Pro'; ?>
+<?php $pageTitle = 'Register - EarningsLLC'; ?>
 <?php include 'header.php'; ?>
 
 <div class="auth-container">
     <div class="auth-box">
         <h1>Create Account</h1>
-        <p class="auth-subtitle">Join our data optimization platform</p>
+        <p class="auth-subtitle">Join our professional earnings platform</p>
 
         <form method="POST" action="/register" class="auth-form">
             <div class="form-group">
