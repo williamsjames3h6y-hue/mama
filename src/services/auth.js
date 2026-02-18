@@ -1,69 +1,50 @@
-import { supabase } from '../config/supabase.js';
-import { getUserById, createUser } from './database.js';
+import { apiCall } from '../config/api.js';
 
 export async function signUp(email, password, fullName) {
-  const { data: authData, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
+  const data = await apiCall('/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify({ email, password, fullName }),
   });
 
-  if (authError) throw authError;
-
-  if (authData.user) {
-    const referralCode = generateReferralCode();
-
-    await createUser({
-      id: authData.user.id,
-      email,
-      full_name: fullName,
-      role: 'user',
-      vip_level: 1,
-      balance: 0,
-      total_earned: 0,
-      referral_code: referralCode
-    });
-  }
-
-  return authData;
+  localStorage.setItem('currentUser', JSON.stringify(data.user));
+  return data;
 }
 
 export async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
+  const data = await apiCall('/auth/signin', {
+    method: 'POST',
+    body: JSON.stringify({ email, password }),
   });
 
-  if (error) throw error;
+  localStorage.setItem('currentUser', JSON.stringify(data.user));
   return data;
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+  localStorage.removeItem('currentUser');
 }
 
 export async function getCurrentUser() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const userStr = localStorage.getItem('currentUser');
+  if (!userStr) return null;
 
-  if (!session) return null;
+  const user = JSON.parse(userStr);
+  const freshUser = await apiCall(`/users/${user.id}`);
 
-  const user = await getUserById(session.user.id);
-  return user;
+  if (freshUser) {
+    localStorage.setItem('currentUser', JSON.stringify(freshUser));
+  }
+
+  return freshUser;
 }
 
 export function onAuthStateChange(callback) {
-  return supabase.auth.onAuthStateChange((event, session) => {
-    (async () => {
-      if (session) {
-        const user = await getUserById(session.user.id);
-        callback(event, user);
-      } else {
-        callback(event, null);
-      }
-    })();
-  });
-}
+  const user = localStorage.getItem('currentUser');
+  if (user) {
+    callback('SIGNED_IN', JSON.parse(user));
+  } else {
+    callback('SIGNED_OUT', null);
+  }
 
-function generateReferralCode() {
-  return 'REF' + Math.random().toString(36).substring(2, 10).toUpperCase();
+  return { data: { subscription: { unsubscribe: () => {} } } };
 }
