@@ -3,14 +3,21 @@ import { apiCall } from '../config/api.js';
 let currentUser = null;
 let authChangeCallbacks = [];
 
-export async function signUp(email, password, fullName) {
-  const data = await apiCall('/auth/signup', {
+export async function signUp(email, password, fullName, referralCode = null) {
+  const payload = { email, password, full_name: fullName };
+  if (referralCode) {
+    payload.referral_code = referralCode;
+  }
+
+  const data = await apiCall('/auth/register', {
     method: 'POST',
-    body: JSON.stringify({ email, password, full_name: fullName })
+    body: JSON.stringify(payload)
   });
 
   if (data.user) {
     currentUser = data.user;
+    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('token', data.token);
     notifyAuthChange('SIGNED_UP', data.user);
   }
 
@@ -34,7 +41,6 @@ export async function signIn(email, password) {
 }
 
 export async function signOut() {
-  await apiCall('/auth/logout', { method: 'POST' });
   currentUser = null;
   localStorage.removeItem('user');
   localStorage.removeItem('token');

@@ -1,4 +1,4 @@
-# Basic .htaccess for testing
+# Basic .htaccess configuration
 DirectoryIndex index.html
 
 # Enable Rewrite Engine
@@ -6,9 +6,14 @@ DirectoryIndex index.html
   RewriteEngine On
   RewriteBase /
 
+  # API Routes - Forward to api/index.php
+  RewriteCond %{REQUEST_URI} ^/api/
+  RewriteRule ^api/(.*)$ api/index.php [L,QSA]
+
   # Handle Single Page Application routing
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/api/
   RewriteRule ^ index.html [L]
 </IfModule>
 
@@ -21,4 +26,7 @@ DirectoryIndex index.html
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
+  Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+  Header set Access-Control-Allow-Headers "Content-Type, Authorization"
 </IfModule>
