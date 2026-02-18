@@ -1,89 +1,264 @@
-import { apiCall } from '../config/api.js';
+import { supabase } from '../config/supabase.js';
 
 export async function initializeDatabase() {
   try {
-    await apiCall('/users');
+    const { error } = await supabase.from('users').select('id').limit(1);
+    if (error) throw error;
     console.log('Database connection verified');
     return true;
   } catch (error) {
-    console.log('Database needs initialization');
+    console.error('Database connection error:', error);
     return false;
   }
 }
 
 export async function getUsers() {
-  return await apiCall('/users');
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data;
 }
 
 export async function getUserById(id) {
-  return await apiCall(`/users/${id}`);
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function createUser(userData) {
-  return await apiCall('/users', {
-    method: 'POST',
-    body: JSON.stringify(userData),
-  });
+  const { data, error } = await supabase
+    .from('users')
+    .insert([userData])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function updateUser(id, updates) {
-  return await apiCall(`/users/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(updates),
-  });
+  const { data, error } = await supabase
+    .from('users')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function getProjects(vipLevel = 1) {
-  return await apiCall(`/projects?vipLevel=${vipLevel}`);
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('status', 'open')
+    .lte('vip_level_required', vipLevel)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data;
 }
 
 export async function getAllProjects() {
-  return await apiCall('/projects/all');
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data;
 }
 
 export async function createProject(projectData) {
-  return await apiCall('/projects', {
-    method: 'POST',
-    body: JSON.stringify(projectData),
-  });
+  const { data, error } = await supabase
+    .from('projects')
+    .insert([projectData])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function updateProject(id, updates) {
-  return await apiCall(`/projects/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(updates),
-  });
+  const { data, error } = await supabase
+    .from('projects')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function deleteProject(id) {
-  return await apiCall(`/projects/${id}`, {
-    method: 'DELETE',
-  });
+  const { error } = await supabase
+    .from('projects')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw error;
+  return { success: true };
 }
 
 export async function getSettings() {
-  return await apiCall('/settings');
+  const { data, error } = await supabase
+    .from('site_settings')
+    .select('*');
+
+  if (error) throw error;
+
+  const settings = {};
+  data.forEach(setting => {
+    settings[setting.key] = setting.value;
+  });
+
+  return settings;
 }
 
 export async function updateSetting(key, value) {
-  return await apiCall(`/settings/${key}`, {
-    method: 'PUT',
-    body: JSON.stringify({ value }),
-  });
+  const { data, error } = await supabase
+    .from('site_settings')
+    .update({ value })
+    .eq('key', key)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function getUserProjects(userId) {
-  return await apiCall(`/user-projects/${userId}`);
+  const { data, error } = await supabase
+    .from('user_projects')
+    .select(`
+      *,
+      projects (*)
+    `)
+    .eq('user_id', userId)
+    .order('submitted_at', { ascending: false });
+
+  if (error) throw error;
+  return data;
 }
 
-export async function applyToProject(userId, projectId) {
-  return await apiCall('/user-projects', {
-    method: 'POST',
-    body: JSON.stringify({ userId, projectId }),
-  });
+export async function applyToProject(userId, projectId, hoursWorked = 0) {
+  const { data, error } = await supabase
+    .from('user_projects')
+    .insert([{
+      user_id: userId,
+      project_id: projectId,
+      hours_worked: hoursWorked,
+      status: 'submitted'
+    }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 export async function getPayments(userId = null) {
-  const query = userId ? `?userId=${userId}` : '';
-  return await apiCall(`/payments${query}`);
+  let query = supabase
+    .from('payments')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (userId) {
+    query = query.eq('user_id', userId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) throw error;
+  return data;
+}
+
+export async function createWithdrawal(userId, amount, method, accountDetails) {
+  const { data, error } = await supabase
+    .from('withdrawals')
+    .insert([{
+      user_id: userId,
+      amount,
+      method,
+      account_details: accountDetails,
+      status: 'pending'
+    }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getWithdrawals(userId = null) {
+  let query = supabase
+    .from('withdrawals')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (userId) {
+    query = query.eq('user_id', userId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateWithdrawal(id, updates) {
+  const { data, error } = await supabase
+    .from('withdrawals')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getAllUserProjects() {
+  const { data, error } = await supabase
+    .from('user_projects')
+    .select(`
+      *,
+      users!user_projects_user_id_fkey (
+        id,
+        email,
+        full_name
+      ),
+      projects (
+        id,
+        title,
+        description
+      )
+    `)
+    .order('submitted_at', { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateUserProject(id, updates) {
+  const { data, error } = await supabase
+    .from('user_projects')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }

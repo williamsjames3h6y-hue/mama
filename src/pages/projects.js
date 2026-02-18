@@ -62,11 +62,21 @@ function renderNavbar(user) {
 }
 
 window.applyToProject = async function(projectId) {
-  const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+  const { getCurrentUserData } = await import('../main.js');
+  const user = getCurrentUserData();
   if (!user) return;
 
+  const hoursInput = prompt('Enter estimated hours to work on this project:');
+  if (!hoursInput) return;
+
+  const hours = parseFloat(hoursInput);
+  if (isNaN(hours) || hours <= 0) {
+    alert('Please enter a valid number of hours');
+    return;
+  }
+
   try {
-    await applyToProject(user.id, projectId);
+    await applyToProject(user.id, projectId, hours);
     alert('Application submitted successfully!');
     navigate('/projects');
   } catch (error) {
