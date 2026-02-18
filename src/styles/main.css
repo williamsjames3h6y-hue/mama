@@ -27,6 +27,26 @@ body {
   background: var(--light);
 }
 
+body:has(.profile-page) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+body:has(.dashboard-page) {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  min-height: 100vh;
+}
+
+body:has(.payments-page) {
+  background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+  min-height: 100vh;
+}
+
+body:has(.projects-page) {
+  background: var(--white);
+  min-height: 100vh;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -468,6 +488,30 @@ tr:hover {
   }
 }
 
+.vip-level-indicator {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.vip-icon {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
 @media (max-width: 768px) {
   .landing-hero h1 {
     font-size: 2rem;
@@ -485,5 +529,10 @@ tr:hover {
   .navbar-menu {
     flex-direction: column;
     gap: 1rem;
+  }
+
+  .vip-level-indicator {
+    flex-direction: column;
+    text-align: center;
   }
 }

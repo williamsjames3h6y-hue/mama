@@ -11,10 +11,11 @@ export async function renderDashboard(app, user, settings) {
 
   app.innerHTML = `
     ${renderNavbar(user)}
-    <div class="container">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-        <div>
-          <h1>Welcome, ${user.full_name}</h1>
+    <div class="container dashboard-page">
+      <div style="position: relative; margin-bottom: 2rem;">
+        <img src="/assets/images/4.jpg" alt="Dashboard" style="width: 100%; height: 300px; object-fit: cover; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+        <div style="position: absolute; bottom: 2rem; left: 2rem; background: rgba(255,255,255,0.95); padding: 1.5rem 2rem; border-radius: 12px; backdrop-filter: blur(10px);">
+          <h1 style="margin-bottom: 0.5rem;">Welcome, ${user.full_name}</h1>
           <span class="badge badge-vip" style="font-size: 1rem; padding: 0.5rem 1rem;">VIP Level ${user.vip_level}</span>
         </div>
       </div>

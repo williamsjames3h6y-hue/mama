@@ -9,8 +9,14 @@ export async function renderProjectsPage(app, user) {
 
   app.innerHTML = `
     ${renderNavbar(user)}
-    <div class="container">
-      <h1 style="margin-bottom: 2rem;">Available Projects</h1>
+    <div class="container projects-page">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <h1>Available Projects</h1>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <img src="/assets/images/5.jpg" alt="Projects" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <img src="/assets/images/6.jpg" alt="Work" style="width: 100px; height: 100px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        </div>
+      </div>
       <div class="projects-grid">
         ${projects.length === 0 ? '<div class="card"><p>No projects available at your VIP level.</p></div>' : ''}
         ${projects.map(project => `

@@ -7,8 +7,11 @@ export async function renderPaymentsPage(app, user) {
 
   app.innerHTML = `
     ${renderNavbar(user)}
-    <div class="container">
-      <h1 style="margin-bottom: 2rem;">Payment History</h1>
+    <div class="container payments-page">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <h1>Payment History</h1>
+        <img src="/assets/images/7.jpg" alt="Payments" style="width: 200px; height: 120px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+      </div>
 
       <div class="card">
         ${payments.length === 0 ? '<p>No payment history yet.</p>' : `
