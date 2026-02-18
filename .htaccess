@@ -6,9 +6,9 @@ DirectoryIndex index.html
   RewriteEngine On
   RewriteBase /
 
-  # API Routes - Forward to api/index.php
+  # API Routes - Forward to public/index.php
   RewriteCond %{REQUEST_URI} ^/api/
-  RewriteRule ^api/(.*)$ api/index.php [L,QSA]
+  RewriteRule ^api/(.*)$ public/index.php [L,QSA]
 
   # Handle Single Page Application routing
   RewriteCond %{REQUEST_FILENAME} !-f
