@@ -773,6 +773,170 @@ tr:last-child td {
     margin-bottom: 1rem;
 }
 
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.register-page {
+    display: grid;
+    grid-template-columns: 1fr 500px;
+    gap: 2rem;
+    min-height: 90vh;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.register-images {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.register-image-item {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    height: 280px;
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+    transition: transform 0.3s ease;
+}
+
+.register-image-item:hover {
+    transform: scale(1.02) translateY(-5px);
+}
+
+.register-image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+    color: white;
+    padding: 2rem;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.register-image-item:hover .image-overlay {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.image-overlay h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.image-overlay p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.register-page .auth-container {
+    min-height: auto;
+    display: flex;
+    align-items: center;
+}
+
+.register-form-box {
+    animation: slideInRight 0.8s ease-out;
+}
+
+.register-form-box h1 {
+    animation: fadeIn 1s ease-out;
+}
+
+.register-form-box .form-group {
+    animation: fadeInUp 0.8s ease-out;
+    animation-fill-mode: both;
+}
+
+.register-form-box .form-group:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.register-form-box .form-group:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.register-form-box .form-group:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.register-form-box .form-group:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.register-form-box .btn {
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+
+.register-form-box .auth-footer {
+    animation: fadeIn 1s ease-out 0.6s both;
+}
+
+@media (max-width: 1024px) {
+    .register-page {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    .register-images {
+        order: 2;
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .register-image-item {
+        min-width: 300px;
+        height: 200px;
+    }
+
+    .register-page .auth-container {
+        order: 1;
+    }
+}
+
 @media (max-width: 768px) {
     .nav-menu {
         flex-direction: column;
@@ -797,5 +961,26 @@ tr:last-child td {
 
     .balance-actions {
         flex-direction: column;
+    }
+
+    .register-page {
+        padding: 1rem;
+    }
+
+    .register-image-item {
+        min-width: 250px;
+        height: 180px;
+    }
+
+    .image-overlay {
+        padding: 1rem;
+    }
+
+    .image-overlay h3 {
+        font-size: 1.2rem;
+    }
+
+    .image-overlay p {
+        font-size: 0.85rem;
     }
 }

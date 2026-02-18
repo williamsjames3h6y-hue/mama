@@ -16,8 +16,10 @@ class Auth {
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $referralCode = $this->generateReferralCode();
+        $userId = $this->generateUUID();
 
         $userData = [
+            'id' => $userId,
             'email' => $email,
             'password' => $hashedPassword,
             'full_name' => $fullName,
@@ -61,6 +63,16 @@ class Auth {
 
     private function generateReferralCode() {
         return strtoupper(substr(md5(uniqid(rand(), true)), 0, 8));
+    }
+
+    private function generateUUID() {
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
     }
 
     public function requireLogin() {
