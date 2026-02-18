@@ -1,8 +1,7 @@
 -- DataOptimize Pro Database Schema
 -- MySQL Database Structure
 
-CREATE DATABASE IF NOT EXISTS dataoptimize_pro CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE dataoptimize_pro;
+USE u800179901_70;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
