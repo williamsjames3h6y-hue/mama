@@ -30,9 +30,10 @@ A complete data optimization platform with user management, project tracking, pa
 ## Technology Stack
 
 - **Backend**: PHP 7.4+
-- **Database**: Supabase (PostgreSQL)
+- **Database**: MySQL 5.7+ / MariaDB 10.3+
 - **Frontend**: HTML5, CSS3, JavaScript
 - **Architecture**: MVC-like pattern with routing
+- **Database Access**: PDO with prepared statements
 
 ## File Structure
 
@@ -41,6 +42,8 @@ project/
 ├── index.php              # Main application entry point
 ├── .htaccess             # Apache rewrite rules
 ├── .env                  # Environment configuration
+├── database/             # Database schema
+│   └── schema.sql       # MySQL database structure
 ├── core/                 # Core application classes
 │   ├── Auth.php         # Authentication logic
 │   ├── Config.php       # Configuration management
@@ -72,23 +75,37 @@ project/
 
 ## Installation
 
-1. **Configure Environment**
-   - Update `.env` with your Supabase credentials
-   - Credentials are already configured in this project
+**Please see [INSTALL.md](INSTALL.md) for complete step-by-step installation instructions.**
 
-2. **Server Requirements**
-   - PHP 7.4 or higher
-   - Apache with mod_rewrite enabled
-   - cURL extension enabled
+### Quick Setup:
 
-3. **Database Setup**
-   - Database schema is already created via migrations
-   - Sample data has been added
+1. **Install XAMPP/WAMP/MAMP** with Apache, MySQL, and PHP 7.4+
 
-4. **Default Admin Account**
-   - Email: admin@dataoptimize.com
-   - Password: admin123
-   - **IMPORTANT**: Change this password after first login!
+2. **Import Database**
+   - Open phpMyAdmin (http://localhost/phpmyadmin)
+   - Import `database/schema.sql`
+   - Database `dataoptimize_pro` will be created automatically
+
+3. **Configure Environment**
+   - Update `.env` with your MySQL credentials:
+     ```
+     DB_HOST=localhost
+     DB_NAME=dataoptimize_pro
+     DB_USER=root
+     DB_PASS=
+     ```
+
+4. **Enable mod_rewrite**
+   - Apache must have mod_rewrite enabled for clean URLs
+
+5. **Access Application**
+   - Open browser: http://localhost/dataoptimize_pro
+   - Login with admin credentials below
+
+### Default Admin Account
+- **Email**: admin@dataoptimize.com
+- **Password**: admin123
+- **IMPORTANT**: Change this password immediately after first login!
 
 ## Usage
 
@@ -110,11 +127,12 @@ project/
 ## Security Features
 
 - Password hashing with bcrypt
-- Row Level Security (RLS) policies on all tables
+- SQL injection prevention via PDO prepared statements
 - CSRF protection through session management
-- SQL injection prevention via prepared statements
 - XSS protection with output escaping
 - Secure session handling
+- Role-based access control (User/Admin)
+- Input validation and sanitization
 
 ## API Endpoints
 
@@ -157,10 +175,12 @@ All routes are handled through index.php:
 - **payments** - Payment transactions
 - **site_settings** - Configurable site settings
 
-### Security
-- Row Level Security enabled on all tables
-- Separate policies for users and admins
-- Authenticated access only
+### Features
+- Proper foreign key relationships
+- Indexed columns for performance
+- UUID primary keys
+- ENUM constraints for data integrity
+- Automatic timestamps
 
 ## Customization
 

@@ -98,11 +98,7 @@ $router->get('home', function() use ($auth, $db) {
         Helper::redirect('/logout');
     }
 
-    $payments = $db->query('payments', [
-        'user_id' => 'eq.' . $userId,
-        'select' => '*',
-        'order' => 'created_at.desc'
-    ]);
+    $payments = $db->query('payments', ['user_id' => $userId]);
 
     $awaitingPayout = 0;
     $totalPaid = 0;
@@ -115,10 +111,7 @@ $router->get('home', function() use ($auth, $db) {
         }
     }
 
-    $userProjects = $db->query('user_projects', [
-        'user_id' => 'eq.' . $userId,
-        'select' => '*'
-    ]);
+    $userProjects = $db->query('user_projects', ['user_id' => $userId]);
 
     $tasksWeek = 0;
     $payableHours = 0;
@@ -154,16 +147,9 @@ $router->get('projects', function() use ($auth, $db) {
 
     $userId = Session::getUserId();
 
-    $projects = $db->query('projects', [
-        'status' => 'eq.open',
-        'select' => '*',
-        'order' => 'created_at.desc'
-    ]);
+    $projects = $db->query('projects', ['status' => 'open']);
 
-    $userProjectsData = $db->query('user_projects', [
-        'user_id' => 'eq.' . $userId,
-        'select' => '*'
-    ]);
+    $userProjectsData = $db->query('user_projects', ['user_id' => $userId]);
 
     $userProjects = [];
     foreach ($userProjectsData as $up) {
@@ -296,11 +282,7 @@ $router->get('payments', function() use ($auth, $db) {
 
     $userId = Session::getUserId();
 
-    $payments = $db->query('payments', [
-        'user_id' => 'eq.' . $userId,
-        'select' => '*',
-        'order' => 'created_at.desc'
-    ]);
+    $payments = $db->query('payments', ['user_id' => $userId]);
 
     include 'views/payments.php';
 });
@@ -333,10 +315,7 @@ $router->get('admin', function() use ($auth, $db) {
 $router->get('admin/users', function() use ($auth, $db) {
     $auth->requireAdmin();
 
-    $users = $db->query('users', [
-        'select' => '*',
-        'order' => 'created_at.desc'
-    ]);
+    $users = $db->query('users', []);
 
     include 'views/admin/users.php';
 });
@@ -344,10 +323,7 @@ $router->get('admin/users', function() use ($auth, $db) {
 $router->get('admin/projects', function() use ($auth, $db) {
     $auth->requireAdmin();
 
-    $projects = $db->query('projects', [
-        'select' => '*',
-        'order' => 'created_at.desc'
-    ]);
+    $projects = $db->query('projects', []);
 
     include 'views/admin/projects.php';
 });

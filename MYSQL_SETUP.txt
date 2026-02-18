@@ -1,0 +1,79 @@
+================================================================
+  DATAOPTIMIZE PRO - MYSQL DATABASE SETUP
+================================================================
+
+QUICK INSTALLATION STEPS:
+-------------------------
+
+1. INSTALL WEB SERVER
+   - Download and install XAMPP/WAMP/MAMP
+   - Start Apache and MySQL services
+
+2. IMPORT DATABASE
+   - Open phpMyAdmin: http://localhost/phpmyadmin
+   - Click "Import" tab
+   - Choose file: database/schema.sql
+   - Click "Go" button
+   - Database "dataoptimize_pro" will be created automatically
+
+3. CONFIGURE APPLICATION
+   - Edit .env file:
+     DB_HOST=localhost
+     DB_NAME=dataoptimize_pro
+     DB_USER=root
+     DB_PASS=
+
+4. ACCESS WEBSITE
+   - Copy project to: C:/xampp/htdocs/dataoptimize_pro/
+   - Open browser: http://localhost/dataoptimize_pro
+   - Login with admin account
+
+DEFAULT ADMIN LOGIN:
+-------------------
+Email: admin@dataoptimize.com
+Password: admin123
+
+DATABASE STRUCTURE:
+------------------
+- users (User accounts and authentication)
+- projects (Available work opportunities)
+- user_projects (User applications to projects)
+- payments (Deposits, withdrawals, earnings)
+- site_settings (Platform configuration)
+
+SAMPLE DATA INCLUDED:
+--------------------
+✓ Admin user account
+✓ 5 sample projects
+✓ Default site settings
+✓ All tables with proper indexes
+
+TECHNOLOGY:
+----------
+- Backend: PHP 7.4+
+- Database: MySQL 5.7+ / MariaDB 10.3+
+- Web Server: Apache with mod_rewrite
+- Database Access: PDO with prepared statements
+
+FULL DOCUMENTATION:
+------------------
+See INSTALL.md for complete installation guide
+See README.md for features and usage guide
+See SETUP.md for project structure overview
+
+TROUBLESHOOTING:
+---------------
+Issue: Can't connect to database
+Fix: Check MySQL is running in XAMPP Control Panel
+
+Issue: 404 errors on pages
+Fix: Enable mod_rewrite in Apache httpd.conf
+
+Issue: Can't login
+Fix: Verify database was imported successfully
+
+SUPPORT:
+--------
+Check INSTALL.md for detailed troubleshooting steps
+
+================================================================

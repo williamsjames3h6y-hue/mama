@@ -9,10 +9,13 @@ project/
 ├── .env                     # Database configuration
 ├── README.md                # Full documentation
 │
+├── database/                # Database files
+│   └── schema.sql          # MySQL database schema
+│
 ├── core/                    # Core application logic
 │   ├── Auth.php            # User authentication
 │   ├── Config.php          # Configuration loader
-│   ├── Database.php        # Supabase database wrapper
+│   ├── Database.php        # MySQL database wrapper (PDO)
 │   ├── Helper.php          # Utility functions
 │   ├── Router.php          # URL routing system
 │   └── Session.php         # Session management
@@ -44,9 +47,10 @@ project/
 ## Quick Start
 
 ### 1. Database Setup
-✅ Database is already configured and ready
-✅ All tables and sample data are created
-✅ Supabase connection is active
+1. Install XAMPP/WAMP/MAMP
+2. Open phpMyAdmin (http://localhost/phpmyadmin)
+3. Import `database/schema.sql`
+4. Database `dataoptimize_pro` will be created with all tables and sample data
 
 ### 2. Default Admin Account
 - **Email**: admin@dataoptimize.com
