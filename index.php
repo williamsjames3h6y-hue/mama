@@ -16,11 +16,16 @@ $db = new Database();
 $auth = new Auth($db);
 $router = new Router();
 
-$router->get('', function() use ($auth) {
+$router->get('', function() use ($auth, $db) {
     if (Session::isLoggedIn()) {
         Helper::redirect('/home');
     } else {
-        Helper::redirect('/login');
+        $settingsData = $db->select('site_settings', []);
+        $settings = [];
+        foreach ($settingsData as $setting) {
+            $settings[$setting['key']] = $setting['value'];
+        }
+        include 'views/landing.php';
     }
 });
 
@@ -147,7 +152,16 @@ $router->get('projects', function() use ($auth, $db) {
 
     $userId = Session::getUserId();
 
-    $projects = $db->query('projects', ['status' => 'open']);
+    $users = $db->select('users', ['id' => $userId]);
+    $user = $users[0] ?? null;
+    $userVipLevel = $user['vip_level'] ?? 1;
+
+    $allProjects = $db->query('projects', ['status' => 'open']);
+
+    $projects = array_filter($allProjects, function($project) use ($userVipLevel) {
+        $requiredLevel = $project['vip_level_required'] ?? 1;
+        return $requiredLevel <= $userVipLevel;
+    });
 
     $userProjectsData = $db->query('user_projects', ['user_id' => $userId]);
 
@@ -337,6 +351,7 @@ $router->post('admin/projects/add', function() use ($auth, $db) {
         'rate_min' => Helper::post('rate_min'),
         'rate_max' => Helper::post('rate_max'),
         'project_type' => Helper::post('project_type', 'Remote'),
+        'vip_level_required' => Helper::post('vip_level_required', 1),
         'status' => 'open'
     ]);
 
@@ -462,8 +477,10 @@ $router->post('admin/settings/update', function() use ($auth, $db) {
     $auth->requireAdmin();
 
     $settingsToUpdate = [
-        'site_name', 'contact_email', 'site_currency', 'site_currency_symbol',
-        'payment_gateway', 'min_withdrawal', 'referral_bonus'
+        'site_name', 'contact_email', 'contact_phone', 'contact_address',
+        'site_currency', 'site_currency_symbol', 'payment_gateway',
+        'min_withdrawal', 'referral_bonus',
+        'vip1_rate', 'vip2_rate', 'vip3_rate', 'vip4_rate', 'vip5_rate'
     ];
 
     foreach ($settingsToUpdate as $key) {

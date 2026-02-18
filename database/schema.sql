@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   password VARCHAR(255) NOT NULL,
   full_name VARCHAR(255) NOT NULL,
   role ENUM('user', 'admin') DEFAULT 'user',
+  vip_level INT DEFAULT 1,
   balance DECIMAL(10,2) DEFAULT 0.00,
   total_earned DECIMAL(10,2) DEFAULT 0.00,
   referral_code VARCHAR(50) UNIQUE,
@@ -18,6 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_email (email),
   INDEX idx_referral_code (referral_code),
+  INDEX idx_vip_level (vip_level),
   FOREIGN KEY (referred_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
@@ -29,9 +31,11 @@ CREATE TABLE IF NOT EXISTS projects (
   rate_min DECIMAL(10,2) NOT NULL,
   rate_max DECIMAL(10,2) NOT NULL,
   project_type VARCHAR(50) DEFAULT 'Remote',
+  vip_level_required INT DEFAULT 1,
   status ENUM('open', 'closed') DEFAULT 'open',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_status (status)
+  INDEX idx_status (status),
+  INDEX idx_vip_level (vip_level_required)
 ) ENGINE=InnoDB;
 
 -- User Projects (applications/submissions)
@@ -74,13 +78,20 @@ CREATE TABLE IF NOT EXISTS site_settings (
 
 -- Insert default settings
 INSERT INTO site_settings (`key`, `value`) VALUES
-  ('site_name', 'DataOptimize Pro'),
+  ('site_name', 'EarningsLLC'),
   ('site_currency', 'USD'),
   ('site_currency_symbol', '$'),
   ('referral_bonus', '300'),
   ('min_withdrawal', '50'),
   ('payment_gateway', 'stripe'),
-  ('contact_email', 'admin@dataoptimize.com')
+  ('contact_email', 'admin@earningsllc.com'),
+  ('contact_phone', '+1 (555) 123-4567'),
+  ('contact_address', '123 Business Street\nSuite 100\nNew York, NY 10001\nUnited States'),
+  ('vip1_rate', '10'),
+  ('vip2_rate', '20'),
+  ('vip3_rate', '50'),
+  ('vip4_rate', '100'),
+  ('vip5_rate', '200')
 ON DUPLICATE KEY UPDATE `value` = VALUES(`value`);
 
 -- Insert default admin user
@@ -90,10 +101,10 @@ INSERT INTO users (id, email, password, full_name, role, referral_code) VALUES
 ON DUPLICATE KEY UPDATE email = email;
 
 -- Insert sample projects
-INSERT INTO projects (id, title, description, rate_min, rate_max, project_type, status) VALUES
-  (UUID(), 'Project Horizon', 'Use your expertise to show how real professionals work and how AI compares', 50, 300, 'Remote - Part-time', 'open'),
-  (UUID(), 'Lawyers', 'Complete a quick form to be considered for upcoming legal projects.', 90, 120, 'Remote - Contract', 'open'),
-  (UUID(), 'Physicians (MD/DO)', 'Complete a quick form to be considered for upcoming medical projects.', 175, 200, 'Remote - Contract', 'open'),
-  (UUID(), 'Data Scientists', 'Work on machine learning projects and data analysis tasks.', 80, 150, 'Remote - Full-time', 'open'),
-  (UUID(), 'Software Engineers', 'Build and maintain web applications using modern technologies.', 70, 180, 'Remote - Contract', 'open')
+INSERT INTO projects (id, title, description, rate_min, rate_max, project_type, vip_level_required, status) VALUES
+  (UUID(), 'Basic Data Entry', 'Simple data entry tasks for beginners', 10, 15, 'Remote - Part-time', 1, 'open'),
+  (UUID(), 'Content Review', 'Review and moderate user-generated content', 20, 25, 'Remote - Contract', 2, 'open'),
+  (UUID(), 'Project Horizon', 'Use your expertise to show how real professionals work and how AI compares', 50, 75, 'Remote - Part-time', 3, 'open'),
+  (UUID(), 'Data Scientists', 'Work on machine learning projects and data analysis tasks.', 100, 120, 'Remote - Full-time', 4, 'open'),
+  (UUID(), 'Senior Consultants', 'High-level consulting projects requiring extensive experience', 200, 250, 'Remote - Contract', 5, 'open')
 ON DUPLICATE KEY UPDATE title = title;

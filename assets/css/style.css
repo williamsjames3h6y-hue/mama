@@ -439,6 +439,22 @@ body {
     color: #92400e;
 }
 
+.badge-vip {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+}
+
+.badge-user {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.badge-admin {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
 .status-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;

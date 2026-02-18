@@ -4,7 +4,7 @@
 <div class="dashboard-container">
     <div class="dashboard-header">
         <h1>Welcome back, <?php echo Helper::escape($user['full_name']); ?></h1>
-        <p>Here's what's happening with your account today</p>
+        <p>Here's what's happening with your account today | <span class="badge badge-vip" style="font-size: 1rem; padding: 0.5rem 1rem;">VIP Level <?php echo $user['vip_level'] ?? 1; ?></span></p>
     </div>
 
     <div class="stats-grid">

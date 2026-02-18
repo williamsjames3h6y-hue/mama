@@ -15,10 +15,6 @@ class Router {
         $uri = parse_url($uri, PHP_URL_PATH);
         $uri = trim($uri, '/');
 
-        if (empty($uri)) {
-            $uri = 'home';
-        }
-
         if (isset($this->routes[$method][$uri])) {
             return call_user_func($this->routes[$method][$uri]);
         }

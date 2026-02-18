@@ -26,6 +26,7 @@
                         <th>Title</th>
                         <th>Rate Range</th>
                         <th>Type</th>
+                        <th>VIP Level</th>
                         <th>Status</th>
                         <th>Created</th>
                         <th>Actions</th>
@@ -37,6 +38,7 @@
                             <td><?php echo Helper::escape($project['title']); ?></td>
                             <td><?php echo Helper::formatMoney($project['rate_min']); ?> - <?php echo Helper::formatMoney($project['rate_max']); ?>/hr</td>
                             <td><?php echo Helper::escape($project['project_type']); ?></td>
+                            <td><span class="badge badge-vip">VIP <?php echo $project['vip_level_required'] ?? 1; ?></span></td>
                             <td><span class="badge badge-<?php echo $project['status']; ?>"><?php echo ucfirst($project['status']); ?></span></td>
                             <td><?php echo Helper::formatDate($project['created_at']); ?></td>
                             <td>
@@ -77,14 +79,26 @@
                     <input type="number" id="rate_max" name="rate_max" step="0.01" required>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="project_type">Project Type</label>
-                <select id="project_type" name="project_type">
-                    <option value="Remote">Remote</option>
-                    <option value="Contract">Contract</option>
-                    <option value="Part-time">Part-time</option>
-                    <option value="Full-time">Full-time</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="project_type">Project Type</label>
+                    <select id="project_type" name="project_type">
+                        <option value="Remote">Remote</option>
+                        <option value="Contract">Contract</option>
+                        <option value="Part-time">Part-time</option>
+                        <option value="Full-time">Full-time</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vip_level_required">VIP Level Required</label>
+                    <select id="vip_level_required" name="vip_level_required">
+                        <option value="1">VIP 1</option>
+                        <option value="2">VIP 2</option>
+                        <option value="3">VIP 3</option>
+                        <option value="4">VIP 4</option>
+                        <option value="5">VIP 5</option>
+                    </select>
+                </div>
             </div>
             <button type="submit" class="btn btn-success btn-block">Add Project</button>
         </form>

@@ -33,6 +33,55 @@
                     <input type="email" id="contact_email" name="contact_email"
                            value="<?php echo Helper::escape($settings['contact_email'] ?? ''); ?>" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="contact_phone">Contact Phone</label>
+                    <input type="text" id="contact_phone" name="contact_phone"
+                           value="<?php echo Helper::escape($settings['contact_phone'] ?? ''); ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="contact_address">Contact Address</label>
+                    <textarea id="contact_address" name="contact_address" rows="4"><?php echo Helper::escape($settings['contact_address'] ?? ''); ?></textarea>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h2>VIP Level Rates</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vip1_rate">VIP 1 Rate ($)</label>
+                        <input type="number" id="vip1_rate" name="vip1_rate" step="0.01"
+                               value="<?php echo Helper::escape($settings['vip1_rate'] ?? '10'); ?>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vip2_rate">VIP 2 Rate ($)</label>
+                        <input type="number" id="vip2_rate" name="vip2_rate" step="0.01"
+                               value="<?php echo Helper::escape($settings['vip2_rate'] ?? '20'); ?>" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vip3_rate">VIP 3 Rate ($)</label>
+                        <input type="number" id="vip3_rate" name="vip3_rate" step="0.01"
+                               value="<?php echo Helper::escape($settings['vip3_rate'] ?? '50'); ?>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vip4_rate">VIP 4 Rate ($)</label>
+                        <input type="number" id="vip4_rate" name="vip4_rate" step="0.01"
+                               value="<?php echo Helper::escape($settings['vip4_rate'] ?? '100'); ?>" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="max-width: 48%;">
+                    <label for="vip5_rate">VIP 5 Rate ($)</label>
+                    <input type="number" id="vip5_rate" name="vip5_rate" step="0.01"
+                           value="<?php echo Helper::escape($settings['vip5_rate'] ?? '200'); ?>" required>
+                </div>
             </div>
 
             <div class="settings-section">

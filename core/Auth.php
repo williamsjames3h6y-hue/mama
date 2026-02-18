@@ -24,7 +24,8 @@ class Auth {
             'password' => $hashedPassword,
             'full_name' => $fullName,
             'referral_code' => $referralCode,
-            'role' => 'user'
+            'role' => 'user',
+            'vip_level' => 1
         ];
 
         $result = $this->db->insert('users', $userData);

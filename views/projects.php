@@ -23,6 +23,7 @@
 
                     <div class="project-meta">
                         <span class="badge"><?php echo Helper::escape($project['project_type']); ?></span>
+                        <span class="badge badge-vip">VIP <?php echo $project['vip_level_required'] ?? 1; ?> Required</span>
                         <?php if (isset($userProjects[$project['id']])): ?>
                             <span class="status-badge status-<?php echo $userProjects[$project['id']]['status']; ?>">
                                 ✓ <?php echo ucfirst($userProjects[$project['id']]['status']); ?>
