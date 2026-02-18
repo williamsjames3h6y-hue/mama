@@ -1,85 +1,96 @@
-import { supabase } from '../config/supabase.js';
+import { apiCall } from '../config/api.js';
+
+let currentUser = null;
+let authChangeCallbacks = [];
 
 export async function signUp(email, password, fullName) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        full_name: fullName
-      }
-    }
+  const data = await apiCall('/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify({ email, password, full_name: fullName })
   });
 
-  if (error) throw error;
+  if (data.user) {
+    currentUser = data.user;
+    notifyAuthChange('SIGNED_UP', data.user);
+  }
+
   return data;
 }
 
 export async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
+  const data = await apiCall('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
   });
 
-  if (error) throw error;
+  if (data.user) {
+    currentUser = data.user;
+    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('token', data.token);
+    notifyAuthChange('SIGNED_IN', data.user);
+  }
+
   return data;
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+  await apiCall('/auth/logout', { method: 'POST' });
+  currentUser = null;
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
+  notifyAuthChange('SIGNED_OUT', null);
 }
 
 export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser();
+  if (currentUser) {
+    return currentUser;
+  }
 
-  if (!user) return null;
+  const storedUser = localStorage.getItem('user');
+  const token = localStorage.getItem('token');
 
-  const { data: userData } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', user.id)
-    .maybeSingle();
+  if (!storedUser || !token) {
+    return null;
+  }
 
-  const { data: profileData } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .maybeSingle();
-
-  return {
-    ...user,
-    ...userData,
-    profile: profileData
-  };
+  try {
+    const user = JSON.parse(storedUser);
+    const userData = await apiCall(`/users/${user.id}`);
+    currentUser = userData;
+    return userData;
+  } catch (error) {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    return null;
+  }
 }
 
 export function onAuthStateChange(callback) {
-  return supabase.auth.onAuthStateChange((event, session) => {
-    (async () => {
-      if (session?.user) {
-        const user = await getCurrentUser();
-        callback(event, user);
-      } else {
-        callback(event, null);
-      }
-    })();
+  authChangeCallbacks.push(callback);
+
+  return {
+    unsubscribe: () => {
+      authChangeCallbacks = authChangeCallbacks.filter(cb => cb !== callback);
+    }
+  };
+}
+
+function notifyAuthChange(event, user) {
+  authChangeCallbacks.forEach(callback => {
+    callback(event, user);
   });
 }
 
 export async function updateProfile(userId, updates) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(updates)
-    .eq('id', userId)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
+  return apiCall(`/users/${userId}`, {
+    method: 'PUT',
+    body: JSON.stringify(updates)
+  });
 }
 
 export async function resetPassword(email) {
-  const { error } = await supabase.auth.resetPasswordForEmail(email);
-  if (error) throw error;
+  return apiCall('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ email })
+  });
 }
