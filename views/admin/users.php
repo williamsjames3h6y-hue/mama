@@ -29,6 +29,7 @@
                         <th>Balance</th>
                         <th>Total Earned</th>
                         <th>Joined</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,9 @@
                             <td><?php echo Helper::formatMoney($user['balance']); ?></td>
                             <td><?php echo Helper::formatMoney($user['total_earned']); ?></td>
                             <td><?php echo Helper::formatDate($user['created_at']); ?></td>
+                            <td>
+                                <a href="/admin/users/edit/<?php echo $user['id']; ?>" class="btn-small btn-primary">Edit</a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

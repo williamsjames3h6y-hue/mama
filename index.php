@@ -334,6 +334,37 @@ $router->get('admin/users', function() use ($auth, $db) {
     include 'views/admin/users.php';
 });
 
+$router->get('admin/users/edit/{id}', function($id) use ($auth, $db) {
+    $auth->requireAdmin();
+
+    $user = $db->selectOne('users', ['id' => $id]);
+
+    include 'views/admin/user_edit.php';
+});
+
+$router->post('admin/users/update', function() use ($auth, $db) {
+    $auth->requireAdmin();
+
+    $userId = Helper::post('user_id');
+
+    $result = $db->update('users', [
+        'full_name' => Helper::post('full_name'),
+        'email' => Helper::post('email'),
+        'role' => Helper::post('role'),
+        'vip_level' => Helper::post('vip_level', 1),
+        'balance' => Helper::post('balance'),
+        'total_earned' => Helper::post('total_earned')
+    ], ['id' => $userId]);
+
+    if ($result !== false) {
+        Session::setFlash('success', 'User updated successfully');
+    } else {
+        Session::setFlash('error', 'Failed to update user');
+    }
+
+    Helper::redirect('/admin/users');
+});
+
 $router->get('admin/projects', function() use ($auth, $db) {
     $auth->requireAdmin();
 
