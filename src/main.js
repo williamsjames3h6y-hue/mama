@@ -16,8 +16,17 @@ let currentUser = null;
 let settings = {};
 
 async function init() {
-  currentUser = await getCurrentUser();
-  settings = await getSettings();
+  try {
+    currentUser = await getCurrentUser();
+  } catch (e) {
+    currentUser = null;
+  }
+
+  try {
+    settings = await getSettings();
+  } catch (e) {
+    settings = {};
+  }
 
   onAuthStateChange(async (event, user) => {
     currentUser = user;

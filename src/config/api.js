@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || (window.location.origin + '/api');
+const API_URL = window.location.origin + '/api';
 
 export async function apiCall(endpoint, options = {}) {
   const token = localStorage.getItem('token');

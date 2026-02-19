@@ -65,9 +65,15 @@ export async function getCurrentUser() {
     currentUser = userData;
     return userData;
   } catch (error) {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    return null;
+    try {
+      const user = JSON.parse(storedUser);
+      currentUser = user;
+      return user;
+    } catch {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      return null;
+    }
   }
 }
 

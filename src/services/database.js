@@ -61,16 +61,30 @@ export async function deleteProject(id) {
   });
 }
 
+const DEFAULT_SETTINGS = {
+  site_name: 'EarningsLLC',
+  vip1_rate: '10',
+  vip2_rate: '20',
+  vip3_rate: '50',
+  vip4_rate: '100',
+  vip5_rate: '200',
+  contact_email: 'admin@earningsllc.com',
+  contact_phone: '+1 (555) 123-4567',
+  contact_address: '123 Business Street\nNew York, NY 10001',
+};
+
 export async function getSettings() {
   try {
     const data = await apiCall('/settings');
-    const settings = {};
-    data.forEach(setting => {
-      settings[setting.key] = setting.value;
-    });
+    const settings = { ...DEFAULT_SETTINGS };
+    if (Array.isArray(data)) {
+      data.forEach(setting => {
+        settings[setting.key] = setting.value;
+      });
+    }
     return settings;
   } catch (error) {
-    throw error;
+    return { ...DEFAULT_SETTINGS };
   }
 }
 
