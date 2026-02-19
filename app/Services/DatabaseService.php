@@ -8,14 +8,7 @@ class DatabaseService
 
     public function __construct()
     {
-        $config = require BASE_PATH . '/config/database.php';
-        $driverType = $config['driver'];
-
-        if ($driverType === 'mysql') {
-            $this->driver = new MySQLService();
-        } else {
-            $this->driver = new SupabaseService();
-        }
+        $this->driver = new MySQLService();
     }
 
     public function query($table, $options = [])

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'driver' => getenv('DB_DRIVER') ?: 'supabase',
+    'driver' => getenv('DB_DRIVER') ?: 'mysql',
 
     'mysql' => [
         'host' => getenv('DB_HOST') ?: 'localhost',
@@ -11,11 +11,5 @@ return [
         'password' => getenv('DB_PASSWORD') ?: '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
-    ],
-
-    'supabase' => [
-        'url' => getenv('VITE_SUPABASE_URL'),
-        'anon_key' => getenv('VITE_SUPABASE_SUPABASE_ANON_KEY'),
-        'service_key' => getenv('SUPABASE_SERVICE_ROLE_KEY'),
     ],
 ];
